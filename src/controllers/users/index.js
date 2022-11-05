@@ -3,7 +3,7 @@ import Model from "../../../models";
 export const getAllUsers = ({ offset = 0, limit = 10 }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await Model.user.findAll({
+            const data = await Model.users.findAll({
                 offset: offset,
                 limit: limit,
             });
@@ -16,10 +16,10 @@ export const getAllUsers = ({ offset = 0, limit = 10 }) => {
 };
 
 export const getById = ({ id = 0 }) => {
-    console.log("offset", id);
+
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await Model.user.findByPk(id);
+            const data = await Model.users.findByPk(id);
             resolve(data);
         } catch (error) {
             console.log(error);
@@ -28,14 +28,12 @@ export const getById = ({ id = 0 }) => {
     });
 };
 
-export const CreateUser = ({ firstName, lastName, email }) => {
-    console.log(firstName, lastName, email);
+export const CreateUser = ({ insert_field = {} }) => {
+
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await Model.user.create({
-                firstName,
-                lastName,
-                email,
+            const data = await Model.users.create({
+                ...insert_field
             });
             resolve(data);
         } catch (error) {
@@ -45,15 +43,13 @@ export const CreateUser = ({ firstName, lastName, email }) => {
     });
 };
 
-export const UpdateUser = ({ firstName, lastName, email, id }) => {
-    console.log(firstName, lastName, email, id);
+export const UpdateUser = ({ update_field = {}, id }) => {
+
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await Model.user.update(
+            const data = await Model.users.update(
                 {
-                    firstName,
-                    lastName,
-                    email,
+                    ...update_field
                 },
                 { where: { id: id } }
             );
