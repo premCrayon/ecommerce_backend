@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateUser, getAllUsers, getById, UpdateUser } from "../../../controllers/users";
+import { CreateUser, getAllUsers, getById, UpdateUser } from "../../../controllers/user_profiles";
 
 
 

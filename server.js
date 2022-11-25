@@ -29,6 +29,14 @@ app.listen(PORT, async () => {
         const sequelize = new Sequelize(database, username, password, {
             host: host,
             dialect: dialect,
+            define:{
+                timestamps: false,
+                defaultScope: {
+                    attributes: {
+                      exclude: ['created_at', 'updated_at']
+                    }
+                  }
+               }
         });
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");

@@ -40,3 +40,9 @@ npx sequelize init
 npx sequelize-cli db:migrate
 ## undo last migration
 npx sequelize-cli db:migrate:undo
+## create migration file
+npx sequelize-cli seed:generate --name demo-user
+## running seeder
+npx sequelize-cli db:seed:all
+## undo seeds
+npx sequelize-cli db:seed:undo
