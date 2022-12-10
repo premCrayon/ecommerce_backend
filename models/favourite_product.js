@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class favourite_product extends Model {
+  class FavouriteProduct extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,11 +13,50 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  favourite_product.init({
-    id: DataTypes.UUID
+  FavouriteProduct.init({
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue:DataTypes.UUID4
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:true
+    },
+    is_delete: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
+    created_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    tagged_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    updated_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    product_id:{
+      type: DataTypes.UUID,
+      references: { model: 'products', key: 'id' }
+    }
   }, {
     sequelize,
-    modelName: 'favourite_product',
+    modelName: 'FavouriteProduct',
+    tableName: 'favourite_product',
+
   });
-  return favourite_product;
+  return FavouriteProduct;
 };

@@ -1,5 +1,7 @@
 import { Router } from "express";
 import path from "path";
+import { isAuthenticated } from "../routers/middlewares/auth";
+
 const routes = Router();
 
 const publicApiNames = require("fs")
@@ -22,7 +24,7 @@ publicApiNames.forEach(async (item) => {
 privateApiNames.forEach(async (item) => {
     var route = await require(path.join(__dirname + "/private", item));
     // Need to add auth middleware
-    routes.use(`/${item}/`, protect, route);
+    routes.use(`/${item}/`,isAuthenticated, route);
 });
 
 export default routes;

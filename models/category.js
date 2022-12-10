@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      //product category
+      Category.hasMany(models.Products, {
+        onDelete: "CASCADE",
+        foreignKey: "category_id"
+      });
     }
   }
   Category.init({
-    product_id: {
+    id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,

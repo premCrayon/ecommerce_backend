@@ -1,5 +1,5 @@
 import express from "express";
-import { CreateUser, getAllUsers, getById, UpdateUser } from "../../../controllers/user_profiles";
+import { upsertUser, getAllUsers, getById,login } from "../../../controllers/user_profiles";
 
 
 
@@ -31,9 +31,9 @@ router.post("/getById", async (req, res, next) => {
     }
 });
 
-router.post("/create", async (req, res, next) => {
+router.post("/upsert", async (req, res, next) => {
     try {
-        let data = await CreateUser(req.body);
+        let data = await upsertUser(req.body);
         res.status(200).send({ type: "success", data });
     } catch (err) {
         console.log(err);
@@ -44,9 +44,9 @@ router.post("/create", async (req, res, next) => {
     }
 });
 
-router.post("/update", async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
     try {
-        let data = await UpdateUser(req.body);
+        let data = await login(req.body);
         res.status(200).send({ type: "success", data });
     } catch (err) {
         console.log(err);
@@ -56,5 +56,6 @@ router.post("/update", async (req, res, next) => {
         });
     }
 });
+
 
 module.exports = router;

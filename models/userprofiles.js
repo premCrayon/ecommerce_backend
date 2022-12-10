@@ -13,10 +13,33 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       UserProfiles.belongsTo(models.RoleMaster, {
-        // as:"role_master",
         onDelete: "CASCADE",
         foreignKey: "role_id"
       });
+      //product created by
+      UserProfiles.hasMany(models.Products, {
+        onDelete: "CASCADE",
+        foreignKey: "created_by"
+      });
+
+       //cart created by
+       UserProfiles.hasMany(models.AddToCarts, {
+        onDelete: "CASCADE",
+        foreignKey: "created_by"
+      });
+
+      //order items
+      //cart created by
+      UserProfiles.hasMany(models.OrderItems, {
+        onDelete: "CASCADE",
+        foreignKey: "created_by"
+      });
+       //cart created by
+       UserProfiles.hasMany(models.OrderItems, {
+        onDelete: "CASCADE",
+        foreignKey: "booked_by"
+      });
+
     }
   }
   UserProfiles.init({

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class payment_status extends Model {
+  class PaymentStatus extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,13 +11,43 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      PaymentStatus.hasOne(models.OrderItems, {
+        onDelete: "CASCADE",
+        foreignKey: "payment_status"
+      });
     }
   }
-  payment_status.init({
-    name: DataTypes.STRING
-  }, {
+  PaymentStatus.init({
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    name: {
+      type: DataTypes.STRING
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:true
+    },
+    is_delete: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
+   }, {
     sequelize,
-    modelName: 'payment_status',
+    modelName: 'PaymentStatus',
+    tableName: 'payment_status',
+
   });
-  return payment_status;
+  return PaymentStatus;
 };

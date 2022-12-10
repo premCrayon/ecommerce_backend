@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class order_item_product extends Model {
+  class OrderItemProduct extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,13 +11,51 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      //payment_method
+      OrderItemProduct.belongsTo(models.OrderItems, {
+        onDelete: "CASCADE",
+        foreignKey: "product_id"
+      });
     }
   }
-  order_item_product.init({
-    id: DataTypes.UUID
+  OrderItemProduct.init({
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue:DataTypes.UUID4
+    },
+    order_id:{
+      type: DataTypes.UUID,
+    },
+    product_id:{
+      type: DataTypes.UUID,
+    },
+    count:{
+      type: DataTypes.FLOAT,
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    created_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    updated_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
   }, {
     sequelize,
-    modelName: 'order_item_product',
+    modelName: 'OrderItemProduct',
+    tableName: 'order_item_product',
+
   });
-  return order_item_product;
+  return OrderItemProduct;
 };

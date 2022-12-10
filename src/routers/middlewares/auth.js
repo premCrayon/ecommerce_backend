@@ -1,30 +1,38 @@
-import ErrorResponse from "../utils/errorResponse";
+import ErrorResponse from "../utilities/errorResponse";
 import jwt from "jsonwebtoken";
 
-exports.protect = async (req, res, next) => {
-  let token;
+
+export const isAuthenticated = async (req, res, next) => {
+
+  let token = req.headers.authorization.split(" ")[1];
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
   }
-  // set token to cookie
-  // else if(req.cookies.token){
-  //     token = req.cookies.token;
-  // }
 
   //Token Exsits
   if (!token) {
     return next(new ErrorResponse("Not authorized to access this route", 401));
-  }
+  }      
 
-  try {
+    try {
     // verify token
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const verify = jwt.verify(token, "authToken");
+    const token_details = jwt.decode(token);
 
+    //Token Expired
+    if (!verify) {
+      return next(new ErrorResponse("Token in Expired", 401));
+    } 
+    req.body["role_type"] = token_details?.role_type;
+    req.body["user_profile_id"] = token_details?.id;
+
+  
     next();
   } catch (error) {
+    console.log(error)
     return next(new ErrorResponse("Not authorized to access this route", 401));
   }
 };

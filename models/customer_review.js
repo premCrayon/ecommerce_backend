@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class customer_review extends Model {
+  class CustomerReview extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,11 +13,48 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  customer_review.init({
-    description: DataTypes.STRING
+  CustomerReview.init({
+    id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue:DataTypes.UUID4
+    },
+    description: {
+      type: DataTypes.TEXT
+    },
+    rating: {
+      type: DataTypes.FLOAT
+    },
+    created_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    updated_by:{
+      type: DataTypes.UUID,
+      references: { model: 'user_profiles', key: 'id' }
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:true
+    },
+    is_delete: {
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
+    },
   }, {
     sequelize,
-    modelName: 'customer_review',
+    modelName: 'CustomerReview',
+    tableName: 'customer_review',
+
   });
-  return customer_review;
+  return CustomerReview;
 };

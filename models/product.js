@@ -11,11 +11,36 @@ module.exports = (sequelize, DataTypes) => {
      */
      static associate(models) {
       // define association here
-      // Products.belongsTo(models.RoleMaster, {
-      //   targetKey:"",
-      //   onDelete: "CASCADE",
-      //   foreignKey: "id",
-      // });
+      //created by
+      Products.belongsTo(models.UserProfiles, {
+        onDelete: "CASCADE",
+        foreignKey: "created_by"
+      });
+
+      //product image
+      Products.hasMany(models.ProductAssets, {
+        onDelete: "CASCADE",
+        foreignKey: "product_id"
+      });
+
+      //product Category
+      Products.belongsTo(models.Category, {
+        onDelete: "CASCADE",
+        foreignKey: "category_id"
+      });
+
+      //add cart 
+      Products.hasOne(models.AddToCarts, {
+        onDelete: "CASCADE",
+        foreignKey: "product_id"
+      });
+
+      //order items
+      Products.hasMany(models.OrderItems, {
+          onDelete: "CASCADE",
+          foreignKey: "product_id"
+        });
+
     }
   }
   Products.init(
@@ -61,6 +86,9 @@ module.exports = (sequelize, DataTypes) => {
       is_active:{
         type:DataTypes.BOOLEAN,
         defaultValue:true
+      },
+      unique_no:{
+        type:DataTypes.STRING
       },
       updatedAt: {
         type: DataTypes.DATE,
