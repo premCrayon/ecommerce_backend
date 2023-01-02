@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-    }
+      FavouriteProduct.belongsTo(models.Products, {
+        onDelete: "CASCADE",
+        foreignKey: "product_id"
+      });
+
+  }
   }
   FavouriteProduct.init({
     id: {
@@ -55,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'FavouriteProduct',
-    tableName: 'favourite_product',
+    tableName: 'favourite_products',
 
   });
   return FavouriteProduct;

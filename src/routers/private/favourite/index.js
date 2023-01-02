@@ -1,11 +1,11 @@
 import express from "express";
-import { createdOrder ,getAllOrders,getOrderDetails} from "../../../controllers/orders";
+import {upsertAddToFavourite,getFaouriteProduct} from "../../../controllers/add_to_favouite";
 
 const router = express.Router();
 
-router.post("/create", async (req, res, next) => {
+router.post("/upsert", async (req, res, next) => {
     try {
-        let data = await createdOrder(req.body);
+        let data = await upsertAddToFavourite(req.body);
         res.status(200).send({ type: "success", data });
     } catch (err) {
         console.log(err);
@@ -18,7 +18,7 @@ router.post("/create", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
     try {
-        let data = await getAllOrders(req.body);
+        let data = await getFaouriteProduct(req.body);
         res.status(200).send({ type: "success", data });
     } catch (err) {
         console.log(err);
@@ -29,18 +29,7 @@ router.post("/", async (req, res, next) => {
     }
 });
 
-router.post("/get", async (req, res, next) => {
-    try {
-        let data = await getOrderDetails(req.body);
-        res.status(200).send({ type: "success", data });
-    } catch (err) {
-        console.log(err);
-        next({
-            code: 500,
-            message: err,
-        });
-    }
-});
+
 
 
 

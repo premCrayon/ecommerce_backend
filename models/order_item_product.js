@@ -15,8 +15,15 @@ module.exports = (sequelize, DataTypes) => {
       //payment_method
       OrderItemProduct.belongsTo(models.OrderItems, {
         onDelete: "CASCADE",
+        foreignKey: "order_id"
+      });
+
+      //product
+      OrderItemProduct.belongsTo(models.Products, {
+        onDelete: "CASCADE",
         foreignKey: "product_id"
       });
+
     }
   }
   OrderItemProduct.init({
@@ -24,16 +31,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
-      defaultValue:DataTypes.UUID4
+      defaultValue: DataTypes.UUID4
     },
-    order_id:{
+    order_id: {
       type: DataTypes.UUID,
     },
-    product_id:{
+    product_id: {
       type: DataTypes.UUID,
     },
-    count:{
-      type: DataTypes.FLOAT,
+    count: {
+      type: DataTypes.FLOAT
+    },
+    is_active:{
+      type:DataTypes.BOOLEAN,
+      defaultValue:true
+    },
+    is_delete:{
+      type:DataTypes.BOOLEAN,
+      defaultValue:false
     },
     createdAt: {
       allowNull: false,
@@ -43,18 +58,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DATE
     },
-    created_by:{
+    created_by: {
       type: DataTypes.UUID,
       references: { model: 'user_profiles', key: 'id' }
     },
-    updated_by:{
+    updated_by: {
       type: DataTypes.UUID,
       references: { model: 'user_profiles', key: 'id' }
     },
   }, {
     sequelize,
     modelName: 'OrderItemProduct',
-    tableName: 'order_item_product',
+    tableName: 'order_item_products',
 
   });
   return OrderItemProduct;

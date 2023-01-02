@@ -3,17 +3,23 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class DeliveryLog extends Model {
+  class CancelledOrders extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+        // define association here
+        //product
+        CancelledOrders.belongsTo(models.Products, {
+          onDelete: "CASCADE",
+          foreignKey: "product_id"
+        });
+  
     }
   }
-  DeliveryLog.init({
+  CancelledOrders.init({
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -22,8 +28,16 @@ module.exports = (sequelize, DataTypes) => {
     order_id:{
       type: DataTypes.UUID
     },
-    description:{
-      type:DataTypes.TEXT
+    product_id:{
+      type: DataTypes.UUID
+    },
+    is_active:{
+      type: DataTypes.BOOLEAN,
+      defaultValue:true
+    },
+    is_delete:{
+      type: DataTypes.BOOLEAN,
+      defaultValue:false
     },
     createdAt: {
       allowNull: false,
@@ -32,25 +46,11 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: {
       allowNull: false,
       type: DataTypes.DATE
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      defaultValue:true
-    },
-    is_delete: {
-      type: DataTypes.BOOLEAN,
-      defaultValue:false
-    },
-    created_by:{
-      type: DataTypes.UUID
-    },
-    updated_by:{
-      type: DataTypes.UUID
-        },
+    }
   }, {
     sequelize,
-    modelName: 'DeliveryLog',
-    tableName: 'delivery_logs'
+    modelName: 'CancelledOrders',
+    tableName:'cancelled_orders'
   });
-  return DeliveryLog;
+  return CancelledOrders;
 };

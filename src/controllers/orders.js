@@ -1,7 +1,6 @@
-import Model from "../../models";
-import {Sequelize} from "sequelize";
+import Model  from "../../models";
 
-//upsert product
+//create product
 export const createdOrder = ({ create_fields = {}, user_profile_id }) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -13,6 +12,7 @@ export const createdOrder = ({ create_fields = {}, user_profile_id }) => {
                 created_by: user_profile_id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                booked_by: user_profile_id
             }
 
 
@@ -22,39 +22,120 @@ export const createdOrder = ({ create_fields = {}, user_profile_id }) => {
             });
 
             const product_stock_update_params = list?.map((item) => {
+
                 const minused_count = products?.find(i => i?.id === item?.id)
+
                 return {
                     unique_no: item?.unique_no,
                     stock: item?.stock - minused_count?.count,
+                    name: item?.name,
+                    cost: item?.cost,
+                    discount_percentage: item?.discount_percentage
 
                 }
             })
 
-            console.log(product_stock_update_params)
-
-
-            const updated = await Model.Products.bulkCreate(product_stock_update_params,
+            await Model.Products.bulkCreate(product_stock_update_params,
                 {
-                    updateOnDuplicate: ["unique_no"],
-                })   
+                    updateOnDuplicate: ["stock"],
+                })
 
 
-            // const data = await Model.OrderItems.create(params);
+            const data = await Model.OrderItems.create(params);
 
-            // const ordered_product_params = products?.map((val) => {
-            //     return {
-            //         created_by: user_profile_id,
-            //         order_id: data?.id,
-            //         product_id: val,
-            //         createdAt: new Date(),
-            //         updatedAt: new Date(),
-            //     }
-            // })
+            const ordered_product_params = products?.map((val) => {
+                return {
+                    created_by: user_profile_id,
+                    order_id: data?.id,
+                    product_id: val?.id,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                }
+            })
 
-            //  await Model.OrderItemProduct.bulkCreate(ordered_product_params);
+            await Model.OrderItemProduct.bulkCreate(ordered_product_params);
 
+            await Model.DeliveryLog.create({
+                order_id: data?.id,
+                description: "Order Placed Successfully",
+                created_by: user_profile_id,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            })
 
-            resolve(product_stock_update_params);
+            resolve({ msg: `Order Succeessfully Added` });
+
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+//list al order
+export const getAllOrders = ({ offset = 0, user_profile_id, limit = 10 }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const list = await Model.OrderItems.findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                    created_by: user_profile_id,
+                    is_active: true,
+                    is_delete: false
+                },
+                attributes: [
+                    "id",
+                    "created_at"
+                ],
+                // order: [
+                //     ['createdAt', 'DESC']
+                // ],
+            });
+
+            resolve(list);
+
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
+    });
+};
+
+//get order details
+export const getOrderDetails = ({ order_id }) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const list = await Model.OrderItemProduct.findAll({
+                where: {
+                    order_id: order_id,
+                    is_active: true,
+                    is_delete: false
+                },
+                include: [
+                    {
+                        model: Model.Products,
+                        required: false,
+                        attributes: ["id", "name", "details", "cost", "discount_percentage", "brand", "product_weight", "stock", "unique_no"],
+                        include: [
+                            {
+                                model: Model.ProductAssets,
+                                required: false,
+                                attributes: ["url"],
+                                where: {
+                                    is_active: true
+                                },
+                                limit: 1
+                            },
+                        ]
+
+                    }
+
+                ],
+                attributes: ["id"],
+            });
+
+            resolve(list);
 
         } catch (error) {
             console.log(error);

@@ -23,12 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "booked_by"
       });
 
-       //product
-       OrderItems.belongsTo(models.Products, {
-        onDelete: "CASCADE",
-        foreignKey: "product_id"
-      });
-
       //delivery status
       OrderItems.belongsTo(models.DeliveryStatus, {
         onDelete: "CASCADE",
@@ -50,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       //order product
       OrderItems.hasMany(models.OrderItemProduct, {
         onDelete: "CASCADE",
-        foreignKey: "product_id"
+        foreignKey: "order_id"
       });
     }
   }
