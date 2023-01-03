@@ -76,7 +76,8 @@ export const createdOrder = ({ create_fields = {}, user_profile_id }) => {
 export const getAllOrders = ({ offset = 0, user_profile_id, limit = 10 }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const list = await Model.OrderItems.findAll({
+
+            const lists = await Model.OrderItems.findAll({
                 offset: offset,
                 limit: limit,
                 where: {
@@ -84,16 +85,56 @@ export const getAllOrders = ({ offset = 0, user_profile_id, limit = 10 }) => {
                     is_active: true,
                     is_delete: false
                 },
+                include: [
+                    {
+                        model: Model.PaymentStatus,
+                        required: false,
+                        attributes: ["id", "name"]
+                    },
+                    {
+                        model: Model.PaymentMethods,
+                        required: false,
+                        attributes: ["id", "method"]
+                    },
+                    {
+                        model: Model.DeliveryStatus,
+                        required: false,
+                        attributes: ["id", "name"]
+                    }
+                    
+                ],
                 attributes: [
                     "id",
-                    "created_at"
-                ],
-                // order: [
-                //     ['createdAt', 'DESC']
-                // ],
-            });
+                    "createdAt"
+                ]
+            })
 
-            resolve(list);
+
+            let data=[];
+
+            for (const list of lists) {
+                
+                let {count} = await Model.OrderItemProduct.findAndCountAll({
+                    where:{
+                        order_id:list?.id
+                    },
+                    attributes: [
+                        "id",
+                        "createdAt"
+                    ]
+                })
+
+                data.push({
+                    order_id:list?.id,
+                    created_at:list?.createdAt,
+                    payment_status:list?.PaymentStatus,
+                    payment_methods:list?.PaymentMethod,
+                    delivery_status:list?.DeliveryStatus,
+                    count:count
+                })
+            }
+
+            resolve(data);
 
         } catch (error) {
             console.log(error);

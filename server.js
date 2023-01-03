@@ -29,6 +29,7 @@ app.listen(PORT, async () => {
         const sequelize = new Sequelize(database, username, password, {
             host: host,
             dialect: dialect,
+            query:{raw:true},
             define:{
                 timestamps: false,
                 defaultScope: {
