@@ -49,3 +49,7 @@ npx sequelize-cli db:seed:undo --seed name-of-seed-as-in-data
 ### If you wish to undo all seeds:
 
 npx sequelize-cli db:seed:undo:all
+
+
+## DB Diagrom 
+https://dbdiagram.io/d/63b417227d39e42284e8a08c
