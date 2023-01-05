@@ -11,8 +11,6 @@
 ### Install dotenv to access env file
 `npm i dotenv`
 
-# DB Diagram
-[DB diagram link](https://dbdiagram.io/d/637a2436c9abfc611173f2d4)
 ### Create migration file without model (for alter table)
 npx sequelize-cli migration:generate --name migration-skeleton
 
@@ -52,4 +50,4 @@ npx sequelize-cli db:seed:undo:all
 
 
 ## DB Diagrom 
-https://dbdiagram.io/d/63b417227d39e42284e8a08c
+[DB diagram link] https://dbdiagram.io/d/63b417227d39e42284e8a08c
